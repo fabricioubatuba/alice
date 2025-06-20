@@ -188,22 +188,35 @@
       currentWord.syllables.forEach(syllable => {
         const lineContainer = document.createElement('div');
 
-        const syllableLine = document.createElement('div');
-        syllableLine.className = 'syllable-line';
-        syllableLine.textContent = `${syllable} ${syllable} ${syllable}`;
-        lineContainer.appendChild(syllableLine);
+        const row = document.createElement('div');
+row.style.display = 'flex';
+row.style.justifyContent = 'center';
+row.style.gap = '30px';
 
-        const symbolLine = document.createElement('div');
-        symbolLine.className = 'symbol-line';
+const symbolPath = symbolImages[Math.floor(Math.random() * symbolImages.length)];
 
-        const symbolPath = symbolImages[Math.floor(Math.random() * symbolImages.length)];
-        for (let i = 0; i < 3; i++) {
-          const img = document.createElement('img');
-          img.src = symbolPath;
-          symbolLine.appendChild(img);
-        }
+for (let i = 0; i < 3; i++) {
+  const column = document.createElement('div');
+  column.style.display = 'flex';
+  column.style.flexDirection = 'column';
+  column.style.alignItems = 'center';
 
-        lineContainer.appendChild(symbolLine);
+  const syllableSpan = document.createElement('div');
+  syllableSpan.className = 'syllable-line';
+  syllableSpan.textContent = syllable;
+
+  const symbolImg = document.createElement('img');
+  symbolImg.src = symbolPath;
+  symbolImg.style.width = '30px';
+  symbolImg.style.height = '30px';
+  symbolImg.style.marginTop = '5px';
+
+  column.appendChild(syllableSpan);
+  column.appendChild(symbolImg);
+  row.appendChild(column);
+}
+
+syllablesContainer.appendChild(row);
         syllablesContainer.appendChild(lineContainer);
       });
     }
