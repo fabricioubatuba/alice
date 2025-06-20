@@ -97,7 +97,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Aprendendo Sílabas</h1>
+    <h1>APRENDENDO SÍ LA BAS</h1>
     <div id="score">Pontuação: 0</div>
 
     <div id="main-screen">
@@ -190,7 +190,7 @@
     let score = 0;
     let currentWord = {};
     let wordsPlayed = 0;
-    const maxWords = 5;
+    const maxWords = 10;
 
     const scoreEl = document.getElementById('score');
     const startBtn = document.getElementById('start-btn');
@@ -299,8 +299,8 @@ syllablesContainer.appendChild(row);
     function endGame() {
       answerScreen.style.display = 'none';
       finalScreen.style.display = 'block';
-      finalScore.innerHTML = `Sua pontuação final foi: ${score} pontos!<br><br>${
-        score >= 12 ? 'PERFEITO!' : score >= 8 ? 'MUITO BOM! CONTINUA PRATICANDO!' : 'VOCÊ PODE MELHORAR AINDA MAIS!'
+      finalScore.innerHTML = `TOTAL DE PONTOS: ${score} <br><br>${
+        score >= 12 ? 'PERFEITO!' : score >= 8 ? 'MUITO BOM! CONTINUE PRATICANDO!' : 'VOCÊ PODE MELHORAR AINDA MAIS!'
       }`;
     }
   </script>
