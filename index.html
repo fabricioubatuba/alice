@@ -1,84 +1,257 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Exibição de Palavras</title>
-  <style>
-    @font-face {
-      font-family: 'ComicSans';
-      src: url('ComicSansMS3.ttf') format('truetype');
-    }
+    <meta charset="UTF-8">
+    <title>Aprendendo Sílabas</title>
+    <style>
+        @font-face {
+            font-family: 'ComicSansMS';
+            src: url('ComicSansMS3.ttf') format('truetype');
+        }
 
-    @font-face {
-      font-family: 'BarlowBlack';
-      src: url('Barlow-Black.ttf') format('truetype');
-    }
+        @font-face {
+            font-family: 'BarlowBlack';
+            src: url('Barlow-Black.ttf') format('truetype');
+        }
 
-    body {
-      font-family: 'ComicSans', sans-serif;
-      text-align: center;
-      padding: 20px;
-      background-color: #fefefe;
-    }
+        body {
+            font-family: 'ComicSansMS', sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            padding: 20px;
+        }
 
-    h1 {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
 
-    .info {
-      font-size: 20px;
-      margin-bottom: 30px;
-    }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-family: 'ComicSansMS', sans-serif;
+        }
 
-    .sílaba {
-      font-family: 'BarlowBlack', sans-serif;
-      text-transform: uppercase;
-      font-size: 60px;
-      margin: 10px 0;
-      letter-spacing: 20px;
-    }
+        button:hover {
+            background-color: #45a049;
+        }
 
-    .linha-silabas {
-      display: flex;
-      justify-content: center;
-      gap: 50px;
-      margin-bottom: 30px;
-    }
+        #syllables-container {
+            margin: 30px 0;
+        }
 
-    .simbolos {
-      margin-top: 40px;
-    }
+        .syllable-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+        }
 
-    .simbolos img {
-      width: 60px;
-      height: 60px;
-      margin: 0 10px;
-      vertical-align: middle;
-    }
-  </style>
+        .syllable-line {
+            font-family: 'BarlowBlack', sans-serif;
+            text-transform: uppercase;
+            font-size: 48px;
+            margin: 5px 0;
+            letter-spacing: 15px;
+        }
+
+        .symbol-line img {
+            width: 30px;
+            height: 30px;
+            margin: 0 10px;
+        }
+
+        .syllable-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        #image-container img {
+            max-width: 300px;
+            border: 3px solid #3498db;
+            border-radius: 10px;
+        }
+
+        #score, #result-message {
+            font-size: 22px;
+            margin: 20px 0;
+        }
+
+        #result-message.correct {
+            color: green;
+            font-weight: bold;
+        }
+
+        #result-message.wrong {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Aprendendo Sílabas</h1>
+        <div id="score">Pontuação: 0</div>
 
-  <h1>TÍTULO DA PÁGINA</h1>
+        <div id="main-screen">
+            <button id="start-btn">INICIAR</button>
+        </div>
 
-  <div class="info">Informações adicionais aparecem aqui.</div>
+        <div id="game-screen" style="display: none;">
+            <div id="syllables-container"></div>
+            <button id="know-btn">JÁ SEI!</button>
+        </div>
 
-  <!-- Exemplo com a palavra CASA -->
-  <div class="linha-silabas">
-    <div class="sílaba">CA&nbsp;&nbsp;CA&nbsp;&nbsp;CA</div>
-    <div class="sílaba">SA&nbsp;&nbsp;SA&nbsp;&nbsp;SA</div>
-  </div>
+        <div id="answer-screen" style="display: none;">
+            <div id="image-container">
+                <img id="word-image" src="" alt="Imagem da palavra">
+            </div>
+            <div id="result-message"></div>
+            <button id="correct-btn">ACERTEI</button>
+            <button id="wrong-btn">ERREI</button>
+        </div>
 
-  <!-- Palavra completa -->
-  <div class="sílaba">CASA</div>
+        <div id="final-screen" style="display: none;">
+            <h2>Fim do Jogo!</h2>
+            <div id="final-score"></div>
+            <button id="restart-btn">Jogar Novamente</button>
+        </div>
+    </div>
 
-  <!-- Imagens substituindo símbolos -->
-  <div class="simbolos">
-    <img src="images/triangulo.png" alt="Triângulo">
-    <img src="images/quadrado.png" alt="Quadrado">
-    <img src="images/circulo.png" alt="Círculo">
-  </div>
+    <script>
+        const words = [
+            { word: "CASA", syllables: ["CA", "SA"], image: "images/casa.png" },
+            { word: "CAVALO", syllables: ["CA", "VA", "LO"], image: "images/cavalo.png" },
+            { word: "ESCOLA", syllables: ["ES", "CO", "LA"], image: "images/escola.png" },
+            // ...adicione mais se desejar
+        ];
 
+        const symbolImages = [
+            "images/triangulo.png",
+            "images/quadrado.png",
+            "images/circulo.png"
+        ];
+
+        let score = 0;
+        let currentWord = {};
+        let wordsPlayed = 0;
+        const maxWords = 5;
+
+        const scoreEl = document.getElementById('score');
+        const startBtn = document.getElementById('start-btn');
+        const knowBtn = document.getElementById('know-btn');
+        const correctBtn = document.getElementById('correct-btn');
+        const wrongBtn = document.getElementById('wrong-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        const mainScreen = document.getElementById('main-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const answerScreen = document.getElementById('answer-screen');
+        const finalScreen = document.getElementById('final-screen');
+        const syllablesContainer = document.getElementById('syllables-container');
+        const wordImage = document.getElementById('word-image');
+        const resultMessage = document.getElementById('result-message');
+        const finalScore = document.getElementById('final-score');
+
+        startBtn.onclick = startGame;
+        restartBtn.onclick = startGame;
+        knowBtn.onclick = showAnswer;
+        correctBtn.onclick = () => handleAnswer(true);
+        wrongBtn.onclick = () => handleAnswer(false);
+
+        function startGame() {
+            score = 0;
+            wordsPlayed = 0;
+            updateScore();
+            mainScreen.style.display = 'none';
+            finalScreen.style.display = 'none';
+            answerScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            nextWord();
+        }
+
+        function updateScore() {
+            scoreEl.textContent = `Pontuação: ${score}`;
+        }
+
+        function nextWord() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            syllablesContainer.innerHTML = '';
+
+            const syllableRow = document.createElement('div');
+            syllableRow.className = 'syllable-row';
+
+            currentWord.syllables.forEach(syllable => {
+                const block = document.createElement('div');
+                block.className = 'syllable-block';
+
+                const line = document.createElement('div');
+                line.className = 'syllable-line';
+                line.textContent = `${syllable} ${syllable} ${syllable}`;
+
+                const symbolLine = document.createElement('div');
+                symbolLine.className = 'symbol-line';
+
+                for (let i = 0; i < 3; i++) {
+                    const img = document.createElement('img');
+                    img.src = symbolImages[Math.floor(Math.random() * symbolImages.length)];
+                    symbolLine.appendChild(img);
+                }
+
+                block.appendChild(line);
+                block.appendChild(symbolLine);
+                syllableRow.appendChild(block);
+            });
+
+            syllablesContainer.appendChild(syllableRow);
+        }
+
+        function showAnswer() {
+            gameScreen.style.display = 'none';
+            answerScreen.style.display = 'block';
+            wordImage.src = currentWord.image;
+            wordImage.alt = currentWord.word;
+            resultMessage.textContent = '';
+            resultMessage.className = '';
+        }
+
+        function handleAnswer(correct) {
+            score += correct ? 3 : 1;
+            updateScore();
+            resultMessage.textContent = correct ? 'PARABÉNS! VOCÊ ACERTOU!' : 'NÃO DESISTA! TENTE NOVAMENTE!';
+            resultMessage.className = correct ? 'correct' : 'wrong';
+            wordsPlayed++;
+
+            if (wordsPlayed >= maxWords) {
+                setTimeout(endGame, 2000);
+            } else {
+                setTimeout(() => {
+                    answerScreen.style.display = 'none';
+                    gameScreen.style.display = 'block';
+                    nextWord();
+                }, 2000);
+            }
+        }
+
+        function endGame() {
+            answerScreen.style.display = 'none';
+            finalScreen.style.display = 'block';
+            finalScore.innerHTML = `Sua pontuação final foi: ${score} pontos!<br><br>${
+                score >= 12 ? 'PERFEITO!' : score >= 8 ? 'MUITO BOM! CONTINUA PRATICANDO!' : 'VOCÊ PODE MELHORAR AINDA MAIS!'
+            }`;
+        }
+    </script>
 </body>
 </html>
